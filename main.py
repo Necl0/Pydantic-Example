@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, ValidationError
+from pydantic import BaseModel, validator, ValidationError, confloat, conint
 from typing import Literal, Optional, Union
 import json
 
@@ -76,18 +76,18 @@ class Character(BaseModel):
     name: str
     gender: Literal['male', 'female']
     race: Literal['human', 'orc', 'elf', 'dwarf', 'goblin']
-    hp: float
-    level: int
-    gold: int
+    hp: confloat(gt=-1)
+    level: conint(gt=-1)
+    gold: confloat(gt=-1)
 
-    patk: float
-    matk: float
-    cc: float
-    critdmg: float
-    defense: float
-    luck: float
-    evasion: float
-    mana: float
+    patk: confloat(gt=-1)
+    matk: confloat(gt=-1)
+    cc: confloat(gt=-1)
+    critdmg: confloat(gt=-1)
+    defense: confloat(gt=-1)
+    luck: confloat(gt=-1)
+    evasion: confloat(gt=-1)
+    mana: confloat(gt=-1)
 
     helmet: Union[Armor, None] = None
     chestplate: Union[Armor, None] = None
@@ -120,12 +120,6 @@ class Character(BaseModel):
     @validator('cls')
     def class_valid(cls, v):
         assert v in ['mage', 'warlock', 'warrior', 'rogue', 'paladin', 'monk', 'priest', 'hunter'], 'Invalid class'
-
-        return v
-
-    @validator('level', 'gold', 'patk', 'matk', 'cc', 'critdmg', 'defense', 'luck', 'evasion', 'mana')
-    def valid_level(cls, v):
-        assert v >= 0, 'Value must be 0 or higher.'
 
         return v
 
