@@ -1,6 +1,6 @@
-from pydantic import BaseModel, validator, ValidationError, confloat, conint
+from __future__ import annotations
+from pydantic import BaseModel, validator, ValidationError, confloat, conint, constr
 from typing import Literal, Optional, Union
-import json
 
 
 # Armor and weapon classes
@@ -8,16 +8,16 @@ class Armor(BaseModel):
     """Armor class"""
     name: str
     type: Literal['helmet', 'chestplate', 'leggings', 'boots', 'ring', 'pendant']
-    description: Union[str, None] = None
-    hp: Union[float, None] = None
-    cc: Union[float, None] = None
-    critdmg: Union[float, None] = None
-    patk: Union[float, None] = None
-    matk: Union[float, None] = None
-    defense: Union[float, None] = None
-    luck: Union[float, None] = None
-    evasion: Union[float, None] = None
-    mana: Union[float, None] = None
+    description: Optional[str] = None
+    hp: Optional[float] = None
+    cc: Optional[float] = None
+    critdmg: Optional[float] = None
+    patk: Optional[float] = None
+    matk: Optional[float] = None
+    defense: Optional[float] = None
+    luck: Optional[float] = None
+    evasion: Optional[float] = None
+    mana: Optional[float] = None
 
     @validator('name')
     def name_alpha(cls, v):
@@ -42,15 +42,15 @@ class Weapon(BaseModel):
     """Weapon class"""
     name: str
     type: Literal['sword', 'dagger', 'bow', 'crossbow', 'axe', 'gun', 'staff', 'wand', 'picatrix']
-    description: Union[str, None] = None
-    hp: Union[float, None] = None
-    cc: Union[float, None] = None
-    critdmg: Union[float, None] = None
-    patk: Union[float, None] = None
-    matk: Union[float, None] = None
-    defense: Union[float, None] = None
-    mana: Union[float, None] = None
-    Element: Union[None, Literal['fire', 'water', 'earth', 'air', 'nature', 'radiant', 'shadow']] = None
+    description: Optional[str] = None
+    hp: Optional[float] = None
+    cc: Optional[float] = None
+    critdmg: Optional[float] = None
+    patk: Optional[float] = None
+    matk: Optional[float] = None
+    defense: Optional[float] = None
+    mana: Optional[float] = None
+    Element: Optional[Literal['fire', 'water', 'earth', 'air', 'nature', 'radiant', 'shadow']] = None
 
     @validator('name')
     def name_alpha(cls, v):
@@ -73,7 +73,7 @@ class Weapon(BaseModel):
 
 class Character(BaseModel):
     """Player class"""
-    name: str
+    name: constr(max_length=20)
     gender: Literal['male', 'female']
     race: Literal['human', 'orc', 'elf', 'dwarf', 'goblin']
     hp: confloat(gt=-1)
@@ -89,12 +89,12 @@ class Character(BaseModel):
     evasion: confloat(gt=-1)
     mana: confloat(gt=-1)
 
-    helmet: Union[Armor, None] = None
-    chestplate: Union[Armor, None] = None
-    leggings: Union[Armor, None] = None
-    boots: Union[Armor, None] = None
-    ring: Union[Armor, None] = None
-    pendant: Union[Armor, None] = None
+    helmet: Optional[Armor] = None
+    chestplate: Optional[Armor] = None
+    leggings: Optional[Armor] = None
+    boots: Optional[Armor] = None
+    ring: Optional[Armor] = None
+    pendant: Optional[Armor] = None
 
     inventory: dict[str, Union[int, float]]
     cls: Literal['mage', 'warlock', 'warrior', 'rogue', 'paladin', 'monk', 'priest', 'hunter']
@@ -133,5 +133,3 @@ try:
 except ValidationError as e:
     print(e)
 
-info = json.dumps(Neclo.dict(), indent=4)
-print(info)
